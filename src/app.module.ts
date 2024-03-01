@@ -1,8 +1,9 @@
-import { Module } from '@nestjs/common';
-import { UserModule } from './user/user.module';
+import { Module, NestModule, MiddlewareConsumer } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { NoticiasModule } from './noticias/noticias.module';
+import { AuthModule } from './auth/auth.module';
+import { UsersModule } from './users/users.module';
+import * as cors from 'cors';
 
 @Module({
   imports: [
@@ -18,10 +19,15 @@ import { NoticiasModule } from './noticias/noticias.module';
       database: process.env.DB_DATABASE,
       synchronize: true,
       entities: [`${__dirname}/**/*.entity{.js,.ts}`]
-    }),
-    UserModule,
-    NoticiasModule],
+    }), 
+    AuthModule,
+    UsersModule,
+  ],
   controllers: [],
   providers: [],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(cors()).forRoutes('*');
+  }
+}
