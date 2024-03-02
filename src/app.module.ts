@@ -4,6 +4,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
 import * as cors from 'cors';
+import { NoticiasModule } from './noticias/noticias.module';
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import * as cors from 'cors';
     }), 
     AuthModule,
     UsersModule,
+    NoticiasModule
   ],
   controllers: [],
   providers: [],
