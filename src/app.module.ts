@@ -5,9 +5,15 @@ import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
 import * as cors from 'cors';
 import { NoticiasModule } from './noticias/noticias.module';
+import { ServeStaticModule } from '@nestjs/serve-static';
+import { join } from 'path';
 
 @Module({
   imports: [
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, '..', 'images'),
+      serveRoot: '/images',
+    }),
     ConfigModule.forRoot({
       envFilePath: ['.env.development.local'],
     }),

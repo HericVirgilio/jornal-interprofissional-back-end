@@ -1,36 +1,55 @@
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { CriaNoticiasDto } from "src/dto/create-noticias.dto";
+import { FileDto } from "src/dto/file.dto";
 import { NoticiasEntity } from "src/entity/noticias.entity";
 import { Repository } from "typeorm";
-import * as path from 'path';
-import * as fs from 'fs';
-import { Express } from "express";
+import * as fs from 'fs-extra';
 
 @Injectable()
 export class NoticiasService {
-
     constructor(
         @InjectRepository(NoticiasEntity)
-        private readonly noticiasEntity: Repository<NoticiasEntity>
+        private readonly noticiasRepository: Repository<NoticiasEntity>
     ) { }
 
-    async createNoticias(createNoticias: CriaNoticiasDto, imagem: Express.Multer.File): Promise<NoticiasEntity> {
 
-        const nomeArquivo = imagem.filename;
-        const enderecoDestino = path.join(__dirname, '..', '..', 'images', nomeArquivo);
-        fs.writeFileSync(enderecoDestino, imagem.buffer);
+    async SalvaImagem(file: FileDto):
+        Promise<string> {
+        try {
+            await fs.ensureDir('/home/heric/Developer/jornal-interprofissional-back-end/images')
 
-        const noticia = this.noticiasEntity.create({
-            ...createNoticias,
-            imagem: `/images/${nomeArquivo}`,
-            data: new Date()
-        });
+            const enderecoImagem: string = '/home/heric/Developer/jornal-interprofissional-back-end/images/' + file.originalname;
 
-        return this.noticiasEntity.save(noticia);
+            await fs.writeFile(enderecoImagem, file.buffer)
+
+            const caminhoBD = `images/${file.originalname}`
+
+            return caminhoBD
+        } catch (error) {
+            console.log('============ Erro ao armazenar aquivo ===============', error)
+        }
     }
 
-    async getAllNoticias(): Promise<NoticiasEntity[]> {
-        return this.noticiasEntity.find();
+    async SalvarNoticia(criaNoticias: CriaNoticiasDto, enderecoImagem:string): Promise<NoticiasEntity> {
+        try {
+
+            const noticia = new NoticiasEntity()
+
+            noticia.titulo = criaNoticias.titulo
+            noticia.subtitulo = criaNoticias.subtitulo 
+            noticia.texto = criaNoticias.texto
+            noticia.data = new Date()
+            noticia.imagemAddress = enderecoImagem
+
+            return await this.noticiasRepository.save(noticia)
+        } catch(error) {
+            console.log('============ Erro ao salvar notícia ===============', error)
+            throw error; // Melhor prática: relança o erro para ser tratado pelo chamador
+        }
     }
+
+    async GetNoticias(): Promise<any>{
+        return this.noticiasRepository.find();
+    }  
 }

@@ -12,8 +12,8 @@ export class NoticiasEntity {
     @Column({ name: "subtitulo", nullable: false })
     subtitulo: string;
 
-    @Column({ name: "imagem", nullable: false })
-    imagem: string;
+    @Column({ name: "imagemAddress", nullable: false })
+    imagemAddress: string;
 
     @Column({ name: "texto", nullable: false, type: 'text' })
     texto: string;
