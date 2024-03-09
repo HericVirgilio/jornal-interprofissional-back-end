@@ -7,12 +7,17 @@ import * as cors from 'cors';
 import { NoticiasModule } from './noticias/noticias.module';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
+import { EdicoesModule } from './edicoes/edicoes.module';
 
 @Module({
   imports: [
     ServeStaticModule.forRoot({
       rootPath: join(__dirname, '..', 'images'),
-      serveRoot: '/images',
+      serveRoot: '/images', 
+    }),
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, '..', 'pdf'),
+      serveRoot: '/pdf', 
     }),
     ConfigModule.forRoot({
       envFilePath: ['.env.development.local'],
@@ -29,7 +34,8 @@ import { join } from 'path';
     }), 
     AuthModule,
     UsersModule,
-    NoticiasModule
+    NoticiasModule,
+    EdicoesModule
   ],
   controllers: [],
   providers: [],

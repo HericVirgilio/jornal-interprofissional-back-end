@@ -45,7 +45,7 @@ export class NoticiasService {
             return await this.noticiasRepository.save(noticia)
         } catch(error) {
             console.log('============ Erro ao salvar notícia ===============', error)
-            throw error; // Melhor prática: relança o erro para ser tratado pelo chamador
+            throw error; 
         }
     }
 
