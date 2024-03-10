@@ -5,6 +5,8 @@ import { FileDto } from "src/dto/file.dto";
 import { NoticiasEntity } from "src/entity/noticias.entity";
 import { Repository } from "typeorm";
 import * as fs from 'fs-extra';
+import { createHash } from 'crypto';
+
 
 @Injectable()
 export class NoticiasService {
@@ -19,11 +21,18 @@ export class NoticiasService {
         try {
             await fs.ensureDir('/home/heric/Developer/jornal-interprofissional-back-end/images')
 
-            const enderecoImagem: string = '/home/heric/Developer/jornal-interprofissional-back-end/images/' + file.originalname;
+
+            const hash = createHash('md5').update(file.buffer).digest('hex');
+
+            const extensao = file.originalname.split('.').pop();
+
+            const nomeHashado = hash + "." + extensao;
+
+            const enderecoImagem: string = '/home/heric/Developer/jornal-interprofissional-back-end/images/' + nomeHashado;
 
             await fs.writeFile(enderecoImagem, file.buffer)
 
-            const caminhoBD = `images/${file.originalname}`
+            const caminhoBD = `images/${nomeHashado}`
 
             return caminhoBD
         } catch (error) {
@@ -50,6 +59,10 @@ export class NoticiasService {
     }
 
     async GetNoticias(): Promise<any>{
-        return this.noticiasRepository.find();
+        return this.noticiasRepository.find({
+            order:{
+                data: "DESC"
+            }
+        });
     }  
 }
