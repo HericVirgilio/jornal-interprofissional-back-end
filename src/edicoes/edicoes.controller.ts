@@ -1,12 +1,14 @@
-import { Body, Controller, Post, Get, UploadedFiles, UseInterceptors } from "@nestjs/common";
+import { Body, Controller, Post, Get, UploadedFiles, UseInterceptors, UseGuards, Param, Delete } from "@nestjs/common";
 import { EdicoesService } from "./edicoes.service";
 import { FileFieldsInterceptor, FileInterceptor } from "@nestjs/platform-express";
+import { AuthGuard } from "src/auth/auth.guard";
 
 @Controller('edicoes')
 export class EdicoesController{
     
     constructor( private readonly edicoesService: EdicoesService ){}
 
+    @UseGuards(AuthGuard)
     @Post('upload')
     @UseInterceptors(FileFieldsInterceptor([
         { name: 'imagem', maxCount: 1},
@@ -25,5 +27,20 @@ export class EdicoesController{
             pdfAddress: `http://localhost:8080/${edicoes.pdfAdress}`
         }))
         return edicoesImagens;
+    }
+
+    @Delete(':id')
+    async deleteEdicao(@Param('id') id: number){
+        try{
+            const edicao = await this.edicoesService.EncontrarId(id)
+            if(!edicao){
+                throw new Error('Edição não encontrada');
+            }
+            await this.edicoesService.deleteFiles(edicao.imagemAdress, edicao.pdfAdress)
+            await this.edicoesService.deleteEdicao(id)
+            return { message: 'Edição excluída com sucesso' };
+        } catch(error){
+            throw new Error(`Erro ao excluir edição: ${error.message}`);
+        }
     }
 }

@@ -1,9 +1,10 @@
-import { Body, Controller, Get, Post, UploadedFile, UseInterceptors } from "@nestjs/common";
+import { Body, Controller, Delete, Get, Param, Post, UploadedFile, UseGuards, UseInterceptors } from "@nestjs/common";
 import { FileInterceptor } from "@nestjs/platform-express";
 import { NoticiasEntity } from "src/entity/noticias.entity";
 import { FileDto } from "src/dto/file.dto";
 import { CriaNoticiasDto } from "src/dto/create-noticias.dto";
 import { NoticiasService } from "./noticias.service";
+import { AuthGuard } from "src/auth/auth.guard";
 
 @Controller('noticias')
 export class NoticiasController{
@@ -12,6 +13,7 @@ export class NoticiasController{
         private readonly noticiasService: NoticiasService
     ){}
 
+    @UseGuards(AuthGuard)
     @Post('cria-noticia')
     @UseInterceptors(FileInterceptor('file'))
     async CriaNoticias(@Body() criaNoticias: CriaNoticiasDto,@UploadedFile() file: FileDto) :Promise<NoticiasEntity>{
@@ -34,5 +36,10 @@ export class NoticiasController{
             imagemAddress: `http://localhost:8080/${noticia.imagemAddress}`
         }));
         return noticiasComImagens;
+    }
+
+    @Delete(':id')
+    async deleteNoticia(@Param('id') id: number){
+        
     }
 }

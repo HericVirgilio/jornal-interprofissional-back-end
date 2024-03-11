@@ -70,4 +70,31 @@ export class EdicoesService{
             }
         })
     }
+
+    async EncontrarId(id: number):Promise<EdicoesEntity | undefined> {
+        return this.edicoesRepository.findOne({where: {id: id}})
+    }
+
+    async deleteFiles(imagemAdress: string, pdfAdress: string): Promise<void> {
+
+        const enderecoPdf = `/home/heric/Developer/jornal-interprofissional-back-end/${imagemAdress}`
+
+        const enderecoImagem = `/home/heric/Developer/jornal-interprofissional-back-end/${pdfAdress}`
+
+
+        try {
+            await fs.unlink(enderecoImagem);
+            await fs.unlink(enderecoPdf);
+        } catch (error) {
+            throw new Error(`Erro ao excluir arquivos: ${error.message}`);
+        }
+    }
+
+    async deleteEdicao(id: number): Promise<void> {
+        try {
+            await this.edicoesRepository.delete(id);
+        } catch (error) {
+            throw new Error(`Erro ao excluir edição do banco de dados: ${error.message}`);
+        }
+    }
 }

@@ -1,6 +1,7 @@
 import { Body, Controller, Post, HttpCode, HttpStatus, UseGuards , Request, Get } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { AuthGuard } from './auth.guard';
+import { LoginDto } from 'src/dto/login.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -8,8 +9,9 @@ export class AuthController {
 
     @HttpCode(HttpStatus.OK)
     @Post('login')
-    signIn(@Body() signInDto: Record<string, any>) {
-        return this.authService.SingIn(signInDto.username, signInDto.password);
+    async signIn(@Body() loginDto: LoginDto) {
+        console.log("Estou no controller"+ loginDto.nome, loginDto.senha)
+        return this.authService.SingIn(loginDto.nome, loginDto.senha);
     }
 
     @UseGuards(AuthGuard)
