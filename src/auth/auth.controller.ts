@@ -10,7 +10,6 @@ export class AuthController {
     @HttpCode(HttpStatus.OK)
     @Post('login')
     async signIn(@Body() loginDto: LoginDto) {
-        console.log("Estou no controller"+ loginDto.nome, loginDto.senha)
         return this.authService.SingIn(loginDto.nome, loginDto.senha);
     }
 

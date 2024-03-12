@@ -12,11 +12,7 @@ export class AuthService {
 
     async SingIn(username: string, pass: string): Promise<{access_token: string}> {
         const user = await this.usersService.BuscaUsuario(username);
-
-        console.log("Estou no service")
-
         if (!user || !(await bcrypt.compare(pass, user.senha))) {
-            console.log("deu errado")
             throw new UnauthorizedException();
         }
 

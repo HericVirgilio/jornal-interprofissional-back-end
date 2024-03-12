@@ -6,6 +6,7 @@ import { NoticiasEntity } from "src/entity/noticias.entity";
 import { Repository } from "typeorm";
 import * as fs from 'fs-extra';
 import { createHash } from 'crypto';
+import { EdicoesEntity } from "src/entity/edicoes.entity";
 
 
 @Injectable()
@@ -65,4 +66,25 @@ export class NoticiasService {
             }
         });
     }  
+
+    async EncontrarId(id:number):Promise<NoticiasEntity | undefined>{
+        return this.noticiasRepository.findOne({where: {id: id}})
+    }
+    async deleteFiles(imagemAdress: string): Promise<void> {
+        const enderecoImagem = `/home/heric/Developer/jornal-interprofissional-back-end/${imagemAdress}`
+
+        try {
+            await fs.unlink(enderecoImagem);
+        } catch (error) {
+            throw new Error(`Erro ao excluir arquivos: ${error.message}`);
+        }
+    }
+
+    async deleteNoticia(id: number):Promise<void>{
+        try{
+            await this.noticiasRepository.delete(id)
+        }catch(error){
+            throw new Error(`Erro ao excluir noticia do banco de dados: ${error.message}`);
+        }
+    }
 }

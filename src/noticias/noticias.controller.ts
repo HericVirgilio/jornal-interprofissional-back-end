@@ -39,7 +39,19 @@ export class NoticiasController{
     }
 
     @Delete(':id')
-    async deleteNoticia(@Param('id') id: number){
-        
+    async deleteNoticia(@Param('id') id: number) {
+        console.log("estou no controller")
+        try {
+            console.log("estou no try")
+            const noticia = await this.noticiasService.EncontrarId(id);
+            if (!noticia) {
+                throw new Error('Notícia não encontrada');
+            }
+            await this.noticiasService.deleteFiles(noticia.imagemAddress);
+            await this.noticiasService.deleteNoticia(id);
+            return { message: 'Notícia excluída com sucesso' };
+        } catch (error) {
+            throw new Error(`Erro ao excluir notícia: ${error.message}`);
+        }
     }
 }
