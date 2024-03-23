@@ -1,0 +1,28 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:latest
+    container_name: meu-postgres
+    environment:
+      POSTGRES_DB: jornal
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: tay7eba8rag3GNZ-fdy
+    ports:
+      - "5432:5432"  # Mapeamento da porta do PostgreSQL
+
+  nestjs_app:
+    build:
+      context: .
+      dockerfile: Dockerfile  # Seu Dockerfile para a aplicação NestJS
+    container_name: jornal-backend
+    environment:
+      DB_HOST: postgres  # Use o nome do serviço do PostgreSQL no Docker Compose
+      DB_PORT: 5432
+      DB_USERNAME: postgres
+      DB_PASSWORD: tay7eba8rag3GNZ-fdy
+      DB_DATABASE: jornal
+    ports:
+      - "8080:8080"  # Mapeamento da porta da aplicação NestJS
+    depends_on:
+      - postgres  # Garante que o serviço do PostgreSQL seja iniciado antes da aplicação NestJS
