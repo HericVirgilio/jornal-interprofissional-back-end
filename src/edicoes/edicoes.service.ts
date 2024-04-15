@@ -17,7 +17,7 @@ export class EdicoesService{
     async NovaEdicao(titulo: string, imagem: Express.Multer.File, pdf: Express.Multer.File){   
         try{    
             
-            await fs.ensureDir(`/home/heric/Developer/jornal-interprofissional-back-end/pdf`)
+            await fs.ensureDir(`/var/lib/docker/volumes/pdf`)
 
             const hashPdf = createHash('md5').update(pdf.buffer).digest('hex')
 
@@ -25,7 +25,7 @@ export class EdicoesService{
 
             const nomePdfHashado =  hashPdf + "." + extensaoPdf
             
-            await fs.ensureDir(`/home/heric/Developer/jornal-interprofissional-back-end/images`)
+            await fs.ensureDir(`/var/lib/docker/volumes/imagens`)
 
             const hashImagem = createHash('md5').update(imagem.buffer).digest('hex');
 
@@ -33,9 +33,9 @@ export class EdicoesService{
 
             const nomeImagemHashado = hashImagem + "." + extensaoImagem
 
-            const enderecoPdf = `/home/heric/Developer/jornal-interprofissional-back-end/pdf/${nomePdfHashado}`
+            const enderecoPdf = `/var/lib/docker/volumes/pdf/${nomePdfHashado}`
 
-            const enderecoImagem = `/home/heric/Developer/jornal-interprofissional-back-end/images/${nomeImagemHashado}`
+            const enderecoImagem = `/var/lib/docker/volumes/imagens/${nomeImagemHashado}`
 
             await fs.writeFile(enderecoPdf,pdf.buffer)
 
@@ -77,9 +77,9 @@ export class EdicoesService{
 
     async deleteFiles(imagemAdress: string, pdfAdress: string): Promise<void> {
 
-        const enderecoPdf = `/home/heric/Developer/jornal-interprofissional-back-end/${imagemAdress}`
+        const enderecoPdf = `/var/lib/docker/volumes/${imagemAdress}`
 
-        const enderecoImagem = `/home/heric/Developer/jornal-interprofissional-back-end/${pdfAdress}`
+        const enderecoImagem = `/var/lib/docker/volumes/${pdfAdress}`
 
 
         try {

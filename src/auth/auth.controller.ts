@@ -13,7 +13,6 @@ export class AuthController {
         return this.authService.SingIn(loginDto.nome, loginDto.senha);
     }
 
-    @UseGuards(AuthGuard)
     @Get('cadastro')
     getProfile(@Request() req){
         return req.user;

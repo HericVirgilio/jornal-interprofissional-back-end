@@ -20,7 +20,7 @@ export class NoticiasService {
     async SalvaImagem(file: FileDto):
         Promise<string> {
         try {
-            await fs.ensureDir('/home/heric/Developer/jornal-interprofissional-back-end/images')
+            await fs.ensureDir('/var/lib/docker/volumes/imagens/')
 
 
             const hash = createHash('md5').update(file.buffer).digest('hex');
@@ -29,11 +29,11 @@ export class NoticiasService {
 
             const nomeHashado = hash + "." + extensao;
 
-            const enderecoImagem: string = '/home/heric/Developer/jornal-interprofissional-back-end/images/' + nomeHashado;
+            const enderecoImagem: string = '/var/lib/docker/volumes/imagens/' + nomeHashado;
 
             await fs.writeFile(enderecoImagem, file.buffer)
 
-            const caminhoBD = `images/${nomeHashado}`
+            const caminhoBD = `imagens/${nomeHashado}`
 
             return caminhoBD
         } catch (error) {
@@ -71,7 +71,7 @@ export class NoticiasService {
         return this.noticiasRepository.findOne({where: {id: id}})
     }
     async deleteFiles(imagemAdress: string): Promise<void> {
-        const enderecoImagem = `/home/heric/Developer/jornal-interprofissional-back-end/${imagemAdress}`
+        const enderecoImagem = `/var/lib/docker/volumes/${imagemAdress}`
 
         try {
             await fs.unlink(enderecoImagem);

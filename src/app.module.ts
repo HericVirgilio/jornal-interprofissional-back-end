@@ -20,7 +20,7 @@ import { EdicoesModule } from './edicoes/edicoes.module';
       serveRoot: '/pdf', 
     }),
     ConfigModule.forRoot({
-      envFilePath: ['.env.development.local'],
+      envFilePath: ['.env.development.local', '.env'],
     }),
     TypeOrmModule.forRoot({
       type: 'postgres',
